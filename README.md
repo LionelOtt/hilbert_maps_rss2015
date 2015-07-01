@@ -2,6 +2,15 @@
 
 This repository contains the code which implements the method of the paper "Hilbert maps: scalable continuous occupancy mapping with stochastic gradient descent" by Fabio Ramos and Lionel Ott presented in RSS 2105.
 
+```
+@INPROCEEDINGS{Ramos-RSS-15, 
+    AUTHOR    = {Fabio Ramos AND Lionel Ott}, 
+    TITLE     = {Hilbert maps: scalable continuous occupancy mapping with stochastic gradient descent}, 
+    BOOKTITLE = {Proceedings of Robotics: Science and Systems}, 
+    YEAR      = {2015}
+}
+```
+
 # Software Requirements #
 
 To run the code you need the following software components:
