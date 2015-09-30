@@ -179,7 +179,11 @@ class SparseHilbertMap(object):
                     kernel = sparse.csr_matrix(kernel * (kernel > self.cutoff))
 
                     # Update the classifier using the kernel matrix
-                    self.classifier.partial_fit(kernel, labels, classes=[0, 1])
+                    self.classifier.partial_fit(
+                            kernel,
+                            labels[offset:offset+self.batch_size],
+                            classes=[0, 1]
+                    )
                     offset += self.batch_size
 
     def rkhs_data(self, data):
