@@ -143,7 +143,7 @@ class SparseHilbertMap(object):
             loss="log",
             penalty="elasticnet",
             alpha=0.0001,
-            class_weight="auto",
+            class_weight=None,
             l1_ratio=0.80,
         )
 
@@ -182,7 +182,7 @@ class SparseHilbertMap(object):
                     self.classifier.partial_fit(
                             kernel,
                             labels[offset:offset+self.batch_size],
-                            classes=[0, 1]
+                            classes=[0, 1],
                     )
                     offset += self.batch_size
 
