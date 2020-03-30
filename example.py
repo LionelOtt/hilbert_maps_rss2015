@@ -126,9 +126,9 @@ def generate_map(model, resolution, limits, fname, verbose=True):
     mat = predictions.reshape(x_count, y_count)
     plt.clf()
     plt.title("Occupancy map")
-    plt.imshow(mat.transpose()[::-1, :])
+    plt.imshow(mat.transpose()[::-1, :], cmap="RdBu_r")
     plt.colorbar()
-    plt.savefig(fname)
+    plt.savefig(fname, dpi=300, bbox_inches="tight")
 
 
 def main():
