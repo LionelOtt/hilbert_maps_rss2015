@@ -187,8 +187,8 @@ def sampling_coordinates(x_limits, y_limits, count):
     :return list of sampling coordinates
     """
     coords = []
-    for i in np.linspace(x_limits[0], x_limits[1], count):
-        for j in np.linspace(y_limits[0], y_limits[1], count):
+    for i in np.linspace(x_limits[0], x_limits[1], int(count)):
+        for j in np.linspace(y_limits[0], y_limits[1], int(count)):
             coords.append([i, j])
     return np.array(coords)
 
