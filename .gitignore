@@ -1,5 +1,9 @@
 # Generated files
 *.pyc
+*.png
+*.p
+tags
+
 
 # Editor backup files
 *.sw[op]
