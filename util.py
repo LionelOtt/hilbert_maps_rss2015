@@ -118,19 +118,21 @@ def bounding_box(data, padding=5.0):
     return limits[0], limits[1]
 
 
-def perturb_data(poses):
+def perturb_data(poses, variances=[0.1, 0.1, 0.02]):
     """Returns perturbed position information.
 
     Adds a small amount of noise to position and orientation.
 
     :param poses the list of poses to perturb
+    :param variance variances around x, y, and theta to the additive zero-mean
+        Gaussian noise
     :return pose information with additional noise
     """
     new_poses = []
     for pose in poses:
-        dx = random.gauss(0.0, 0.1)
-        dy = random.gauss(0.0, 0.1)
-        dtheta = random.gauss(0.0, 0.02)
+        dx = random.gauss(0.0, variances[0])
+        dy = random.gauss(0.0, variances[1])
+        dtheta = random.gauss(0.0, variances[2])
 
         new_poses.append((
             pose[0] + dx,
@@ -170,7 +172,9 @@ def free_space_points(distance, pose, angle):
     points = []
     count = max(1, int(distance / 2))
     for _ in range(count):
-        r = random.uniform(0.0, max(0.0, distance-0.1))
+        # Uniform density sampling in 2D
+        r = math.sqrt(random.uniform(0.0, 1.0)) * max(0.0, distance-0.1)
+        # r = random.uniform(0.0, max(0.0, distance-0.1))
         points.append([
                 pose[0] + r * math.cos(angle),
                 pose[1] + r * math.sin(angle)
@@ -187,10 +191,42 @@ def sampling_coordinates(x_limits, y_limits, count):
     :return list of sampling coordinates
     """
     coords = []
-    for i in np.linspace(x_limits[0], x_limits[1], int(count)):
-        for j in np.linspace(y_limits[0], y_limits[1], int(count)):
-            coords.append([i, j])
-    return np.array(coords)
+    indices = []
+    counts = [0, 0]
+    for x in np.linspace(x_limits[0], x_limits[1], int(count)):
+        for y in np.linspace(y_limits[0], y_limits[1], int(count)):
+            coords.append([x, y])
+            indices.append([counts[0], counts[1]])
+            counts[1] += 1
+        counts[0] += 1
+        counts[1] = 0
+    return np.array(coords), np.array(indices)
+
+
+def sampling_coordinates_resolution(x_limits, y_limits, resolution):
+    """Returns an array of 2d grid sampling locations.
+
+    :params x_limits x coordinate limits
+    :params y_limits y coordinate limits
+    :params resolution the sampling resolution
+    :return list of sampling coordinates
+    """
+    coords = []
+    indices = []
+    counts = [
+        int(((x_limits[1] - x_limits[0]) / resolution) + 1),
+        int(((y_limits[1] - y_limits[0]) / resolution) + 1)
+    ]
+
+    for i in range(counts[0]):
+        for j in range(counts[1]):
+            indices.append([i, j])
+            coords.append([
+                x_limits[0] + i * resolution,
+                y_limits[0] + j * resolution
+            ])
+
+    return np.array(coords), np.array(indices)
 
 
 def create_test_train_split(logfile, percentage=0.1, sequence_length=40):
@@ -343,7 +379,7 @@ def roc_occupancy_grid_map(grid_map, data):
     return tpr, fpr, auc
 
 
-def data_generator(poses, scans, step=1):
+def data_generator(poses, scans, step=1, max_range=40.0):
     """Generator which returns data for each scan.
 
     :params poses the sequence of poses
@@ -363,7 +399,7 @@ def data_generator(poses, scans, step=1):
 
         for i, dist in enumerate(ranges):
             # Ignore max range readings
-            if dist > 40:
+            if dist > max_range:
                 continue
 
             angle = normalize_angle(

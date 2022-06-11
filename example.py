@@ -34,17 +34,18 @@ def train_sparse_hm(data, components, gamma, distance_cutoff):
     # Sampling locations distributed in an even grid over the area
     centers = util.sampling_coordinates(xlim, ylim, math.sqrt(components))
 
-    model = hm.SparseHilbertMap(centers, gamma, distance_cutoff)
+    model = hm.SparseHilbertMap(centers[0], gamma, distance_cutoff)
 
     # Train the model with the data
     count = 0
-    for data, label in util.data_generator(poses, scans):
-        model.add(data, label)
+    for _ in range(1):
+        for data, label in util.data_generator(poses, scans):
+            model.add(data, label)
 
-        sys.stdout.write("\rTraining model: {: 6.2f}%".format(count / float(len(poses)) * 100))
-        sys.stdout.flush()
-        count += 1
-    print("")
+            sys.stdout.write("\rTraining model: {: 6.2f}%".format(count / float(len(poses)) * 100))
+            sys.stdout.flush()
+            count += 1
+        print("")
 
     return model
 
@@ -128,7 +129,9 @@ def generate_map(model, resolution, limits, fname, verbose=True):
     plt.title("Occupancy map")
     plt.imshow(mat.transpose()[::-1, :], cmap="RdBu_r")
     plt.colorbar()
-    plt.savefig(fname, dpi=300, bbox_inches="tight")
+
+    if fname is not None:
+        plt.savefig(fname, dpi=300, bbox_inches="tight")
 
 
 def main():

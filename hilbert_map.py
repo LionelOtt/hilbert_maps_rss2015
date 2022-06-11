@@ -1,11 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """Implementation of Fourier, Nystroem, and sparse feature based Hilbert maps."""
 
 import numpy as np
 import random
+from typing import List, Tuple
 
+# import rtree
 from scipy import sparse
 
 from sklearn.cluster import MiniBatchKMeans
@@ -31,7 +33,7 @@ class UsageError(BaseException):
         return "Usage error: {}".format(self.msg)
 
 
-class IncrementalHilbertMap(object):
+class IncrementalHilbertMap:
 
     """Incremental version of Hilbert maps using stochastic gradient descent."""
 
@@ -64,7 +66,7 @@ class IncrementalHilbertMap(object):
 
         # SGD version of logistic regression with elasticnet penalty
         self.classifier = SGDClassifier(
-                loss="log",
+                loss="log_loss",
                 penalty="elasticnet",
                 alpha=0.0001
         )
@@ -122,7 +124,7 @@ class IncrementalHilbertMap(object):
         self.classifier.partial_fit(scaled_data, labels, classes=[0, 1])
 
 
-class SparseHilbertMap(object):
+class SparseHilbertMap:
 
     """Hilbert map using the sparse feature."""
 
@@ -140,7 +142,7 @@ class SparseHilbertMap(object):
         self.use_rkhs = use_rkhs
         self.batch_size = 10000
         self.classifier = SGDClassifier(
-            loss="log",
+            loss="log_loss",
             penalty="elasticnet",
             alpha=0.0001,
             class_weight=None,
