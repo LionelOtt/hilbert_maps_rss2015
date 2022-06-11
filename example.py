@@ -84,7 +84,7 @@ def train_incremental_hm(data, components, gamma, feature):
     return model
 
 
-def generate_map(model, resolution, limits, fname, verbose=True):
+def generate_map(model, resolution, limits, fname=None, verbose=True):
     """Generates a grid map by querying the model at cell locations.
 
     :param model the hilbert map model to use
