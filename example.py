@@ -16,13 +16,14 @@ import hilbert_map as hm
 import util
 
 
-def train_sparse_hm(data, components, gamma, distance_cutoff):
+def train_sparse_hm(data, components, gamma, distance_cutoff, use_rkhs=False):
     """Trains a hilbert map model using the sparse feature.
 
     :param data the dataset to train on
     :param components the number of components to use
     :param gamma the gamma value to use in the RBF kernel
     :param distance_cutoff the value below which values are set to 0
+    :param use_rkhs if True an RKHS variant will be built
     :return hilbert map model trained on the given data
     """
     # Extract poses and scans from the data
@@ -34,7 +35,7 @@ def train_sparse_hm(data, components, gamma, distance_cutoff):
     # Sampling locations distributed in an even grid over the area
     centers = util.sampling_coordinates(xlim, ylim, math.sqrt(components))
 
-    model = hm.SparseHilbertMap(centers[0], gamma, distance_cutoff)
+    model = hm.SparseHilbertMap(centers[0], gamma, distance_cutoff, use_rkhs)
 
     # Train the model with the data
     count = 0
