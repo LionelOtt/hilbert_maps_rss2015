@@ -66,7 +66,7 @@ class IncrementalHilbertMap:
 
         # SGD version of logistic regression with elasticnet penalty
         self.classifier = SGDClassifier(
-                loss="log_loss",
+                loss="log",
                 penalty="elasticnet",
                 alpha=0.0001
         )
@@ -142,7 +142,7 @@ class SparseHilbertMap:
         self.use_rkhs = use_rkhs
         self.batch_size = 10000
         self.classifier = SGDClassifier(
-            loss="log_loss",
+            loss="log",
             penalty="elasticnet",
             alpha=0.0001,
             class_weight=None,
