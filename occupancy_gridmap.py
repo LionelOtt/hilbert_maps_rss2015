@@ -141,7 +141,7 @@ def create_occupancy_grid_map(dataset, resolution=0.1):
     xlim, ylim = bounding_box(scan_endpoints, 10)
 
     # Build actual gridmap
-    gridmap = OccupancyGridmap(xlim, ylim, 0.1)
+    gridmap = OccupancyGridmap(xlim, ylim, resolution)
     for pose, scan in zip(dataset["poses"], dataset["scans"]):
         gridmap.add(pose, scan)
 
